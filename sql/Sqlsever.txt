@@ -1,0 +1,116 @@
+
+
+CREATE TABLE COUPON(
+  id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+  coupon_code NVARCHAR(12) NOT NULL,
+  description NVARCHAR(255),
+  discount_amount INT,
+  start_date DATETIME,
+  end_date DATETIME,
+  expiration_date DATETIME,
+  status VARCHAR(20),
+  delete_flag INT
+);
+
+CREATE TABLE STORE(
+  id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+  name NVARCHAR(255) NOT NULL,
+  description NVARCHAR(255),
+  status VARCHAR(20),
+  delete_flag INT
+);
+
+CREATE TABLE PRODUCT(
+  id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+  product_name NVARCHAR(255) NOT NULL,
+  product_description NVARCHAR(255),
+  price DECIMAL(10,2) NOT NULL,
+  status VARCHAR(20),
+  delete_flag INT,
+  store_id INT NOT NULL,
+  FOREIGN KEY (store_id) REFERENCES store(id)
+);
+
+CREATE TABLE [USER](
+  id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+  name NVARCHAR(255) NOT NULL,
+  description NVARCHAR(255),
+  status VARCHAR(20),
+  delete_flag INT
+);
+
+CREATE TABLE USER_COUPON(
+  user_id INT NOT NULL,
+  coupon_id INT NOT NULL,
+  PRIMARY KEY (user_id,coupon_id),
+  FOREIGN KEY (user_id) REFERENCES [USER](id),
+  FOREIGN KEY (coupon_id) REFERENCES COUPON(id)
+);
+
+CREATE TABLE PRODUCT_COUPON(
+  product_id INT NOT NULL,
+  coupon_id INT NOT NULL,
+  PRIMARY KEY (product_id,coupon_id),
+  FOREIGN KEY (product_id) REFERENCES PRODUCT(id),
+  FOREIGN KEY (coupon_id) REFERENCES COUPON(id)
+);
+
+CREATE TABLE STORE_COUPON(
+  store_id INT NOT NULL,
+  coupon_id INT NOT NULL,
+  PRIMARY KEY (store_id,coupon_id),
+  FOREIGN KEY (store_id) REFERENCES STORE(id),
+  FOREIGN KEY (coupon_id) REFERENCES COUPON(id)
+);
+
+INSERT INTO COUPON (coupon_code, description, discount_amount, start_date, end_date, expiration_date, status, delete_flag)
+VALUES
+('CODE123', N'Giảm giá 10%', 10, '2023-01-01 00:00:00', '2023-12-31 23:59:59', '2023-12-31 23:59:59', 'ACTIVE', 0),
+('SALE50', N'Giảm giá 50%', 50, '2023-01-01 00:00:00', '2023-12-31 23:59:59', '2023-12-31 23:59:59', 'ACTIVE', 0),
+('EXPIRED', N'Hết hạn', 0, '2023-01-01 00:00:00', '2023-01-02 23:59:59', '2023-01-02 23:59:59', 'UN_ACTIVE', 0);
+
+INSERT INTO STORE (name, description, status, delete_flag)
+VALUES
+(N'FPT', N'Cửa hàng FPT', 'ACTIVE', 0),
+(N'Thế giới di động', N'cửa hàng Thế giới di động', 'ACTIVE', 0),
+(N'Cellphone', N'cửa hàng Cellphone', 'UN_ACTIVE', 0);
+
+
+
+-- Insert data into product table
+INSERT INTO PRODUCT (product_name, product_description, price, status, delete_flag, store_id)
+VALUES
+(N'Samsung Galaxy A22', N'Điện thoại Samsung Galaxy A22', 100.00, 'ACTIVE', 0, 1),
+(N'Iphone 13 promax', N'Điện thoại Iphone 13 promax', 150.50, 'ACTIVE', 0, 2),
+(N'Iphone 15 promax', N'Điện thoại Iphone 15 promax', 75.25, 'ACTIVE', 0, 1);
+
+
+-- Insert data into user table
+INSERT INTO [user] (name, description, status, delete_flag)
+VALUES
+(N'Nguyễn Minh huy', N'Nguyễn Minh Huy', 'ACTIVE', 0),
+(N'Hồ Thanh Cao', N'Hồ Thanh Cao', 'ACTIVE', 0), 
+(N'Lý Tuân Bình', N'Lý Tuân Bình', 'ACTIVE', 0);
+   
+
+-- Insert data into user_coupon table
+INSERT INTO user_coupon (user_id, coupon_id)
+VALUES
+(1, 1),
+(1, 2),
+(2, 1);
+
+-- Insert data into product_coupon table
+INSERT INTO product_coupon (product_id, coupon_id)
+VALUES
+(1, 1),
+(1, 2),
+(2, 1);
+
+-- Insert data into store_coupon table
+INSERT INTO store_coupon (store_id, coupon_id)
+VALUES
+(1, 1),
+(1, 2),
+(2, 1);
+
